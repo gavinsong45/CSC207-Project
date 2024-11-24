@@ -32,7 +32,7 @@ public class GoogleSpeechRecognizer implements SpeechRecognizer {
     @Override
     public String recognize(byte[] audioData) throws Exception {
         GoogleCredentials credentials = GoogleCredentials.fromStream(
-                new FileInputStream("/Users/shengfang/Desktop/summer-ranger-441414-f8-0a863841dab9.json"));
+                new FileInputStream("/Users/yibinwang/Desktop/summer-ranger-441414-f8-0a863841dab9.json"));
         SpeechSettings speechSettings = SpeechSettings.newBuilder()
                 .setCredentialsProvider(
                         FixedCredentialsProvider.create(credentials))

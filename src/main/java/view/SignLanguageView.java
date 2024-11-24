@@ -4,8 +4,12 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import controller.SpeechtoTextController;
@@ -13,9 +17,15 @@ import entity.AudioParam;
 import entity.AudioParamFactory;
 import frameworks_and_drivers.Speech2Text.MicrophoneAudioRecorder;
 import interface_adapter.Text2Speech.Text2SpeechController;
+import interface_adapter.translation.TranslationState;
 import use_case.text2speech.Text2SpeechInteractor;
 
-public class SignLanguageView {
+import interface_adapter.translation.TranslationController;
+import interface_adapter.translation.TranslationState;
+import interface_adapter.translation.TranslationViewModel;
+
+// Added action listener & propertychange listener
+public class SignLanguageView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private JFrame frame;
     private JTextArea signLanguageTextArea;
@@ -24,13 +34,21 @@ public class SignLanguageView {
     private GlowButton textToSpeechButton;
     private GlowButton beginTranscriptionButton;
     private GlowButton endTranscriptionButton;
+    // Add translate button
+    private GlowButton translateButton;
     private JPanel mainPanel;
+
+    // Add drop-down menu for translation
+    private JComboBox<String> languageBox;
 
     private Text2SpeechInteractor text2SpeechInteractor;
     private Text2SpeechController text2SpeechController;
 
     private SpeechtoTextController speechToTextController;
     private MicrophoneAudioRecorder audioRecorder;
+
+    private TranslationController translationController;
+    private TranslationViewModel translationViewModel;
 
 
     // Define a color scheme
@@ -40,9 +58,14 @@ public class SignLanguageView {
     private final Color BACKGROUND_COLOR = new Color(236, 240, 241);
     private final Color TEXT_COLOR = new Color(44, 62, 80);
 
-    public SignLanguageView(SpeechtoTextController speechToTextController) {
+    // added translation view model
+    public SignLanguageView(SpeechtoTextController speechToTextController, TranslationViewModel translationViewModel) {
         this.speechToTextController = speechToTextController;
         this.audioRecorder = new MicrophoneAudioRecorder();
+
+        this.translationViewModel = translationViewModel;
+        translationViewModel.addPropertyChangeListener(this);
+
         initializeUI();
     }
 
@@ -129,6 +152,18 @@ public class SignLanguageView {
         });
         beginTranscriptionButton.addActionListener(e -> beginTranscription());
         endTranscriptionButton.addActionListener(e -> endTranscription());
+
+        translateButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(translateButton)) {
+                            String language = (String) languageBox.getSelectedItem();
+                            String text = signLanguageTextArea.getText();
+                            translationController.execute(language, text);
+                        }
+                    }
+                }
+        );
     }
 
     private JPanel createLogoPanel() {
@@ -181,7 +216,16 @@ public class SignLanguageView {
 
         JScrollPane scrollPane = new JScrollPane(signLanguageTextArea);
         scrollPane.setBorder(BorderFactory.createLineBorder(SECONDARY_COLOR));
+
+        // Add language selection drop-down menu
+        String[] languages = {"English", "French", "Spanish", "Mandarin"};
+        languageBox = new JComboBox<>(languages);
+        languageBox.setSize(5, 10);
+        languageBox.setSelectedIndex(0);
+        languageBox.setEditable(false);
+
         panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(languageBox, BorderLayout.EAST);
 
         return panel;
     }
@@ -217,7 +261,10 @@ public class SignLanguageView {
         textToSpeechButton = new GlowButton("Text to Speech", SECONDARY_COLOR);
         beginTranscriptionButton = new GlowButton("Begin Transcription", PRIMARY_COLOR);
         endTranscriptionButton = new GlowButton("End Transcription", ACCENT_COLOR);
+        // Add new button for translation
+        translateButton = new GlowButton("Translate", SECONDARY_COLOR);
 
+        panel.add(translateButton);
         panel.add(textToSpeechButton);
         panel.add(beginTranscriptionButton);
         panel.add(endTranscriptionButton);
@@ -244,8 +291,6 @@ public class SignLanguageView {
         text2SpeechController = new Text2SpeechController(text2SpeechInteractor);
         text2SpeechController.execute(inputText, "en-US", audioParam);
     }
-
-    // with audio from transcrpition text area
 
 
     private void beginTranscription() {
@@ -293,6 +338,9 @@ public class SignLanguageView {
         transcriptionTextArea.append(text + "\n");
     }
 
+    // Hook translate button with translation use case
+
+
     // Custom GlowButton class for a unique, glowing effect
     private static class GlowButton extends JButton {
         private final Color baseColor;
@@ -326,5 +374,27 @@ public class SignLanguageView {
             int y = (height - (int) r.getHeight()) / 2 + fm.getAscent();
             g2d.drawString(getText(), x, y);
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        System.out.println(evt.getActionCommand());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // Sth. to do with the firepropertychange()
+        final TranslationState state = (TranslationState) evt.getNewValue();
+        setFields(state);
+    }
+
+    private void setFields(TranslationState state) {
+        // translationField.setText(state.getTranslation());
+        signLanguageTextArea.setText(state.getTranslation());
+        // Set it so that the input and output are in the same box - fits the UI and links to text-to-speech
+    }
+
+    public void setSelectLanguageController(TranslationController translationController) {
+        this.translationController = translationController;
     }
 }
