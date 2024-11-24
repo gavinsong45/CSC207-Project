@@ -177,6 +177,7 @@ public class SignLanguageView {
         signLanguageTextArea.setWrapStyleWord(true);
         signLanguageTextArea.setBackground(Color.WHITE);
         signLanguageTextArea.setForeground(TEXT_COLOR);
+        signLanguageTextArea.setSize(20,2);
 
         JScrollPane scrollPane = new JScrollPane(signLanguageTextArea);
         scrollPane.setBorder(BorderFactory.createLineBorder(SECONDARY_COLOR));
