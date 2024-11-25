@@ -1,5 +1,6 @@
 package frameworks_and_drivers;
 
+import entity.User;
 import interface_adapter.PredictionInterface;
 import interface_adapter.translation.TranslationViewModel;
 import presenter.SignLanguagePresenter;
@@ -20,31 +21,37 @@ import use_case.translation.TranslationOutputBoundary;
 import java.io.IOException;
 
 public class RunSignLanguageApp {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        String pythonInterpreter = "python3";
-        String scriptPath = "src/main/python/hand_gesture_recognition.py";
 
-        GoogleSpeechRecognizer speechRecognizer = new GoogleSpeechRecognizer();
-        ProcessSpeechInputUseCase speechInputUseCase = new ProcessSpeechInputUseCase(speechRecognizer);
-        SpeechtoTextController speechToTextController = new SpeechtoTextController(speechInputUseCase);
+    public static void start(User user) {
+        System.out.println("Main application is running...");
+        System.out.println("Welcome, " + user.getUsername());
 
-        // Initial translation builder, split up to merge into use case
-        TranslationViewModel translationViewModel = new TranslationViewModel();
-        SignLanguageView signLanguageView = new SignLanguageView(speechToTextController, translationViewModel);
+        try {
+            String pythonInterpreter = "python3";
+            String scriptPath = "src/main/python/hand_gesture_recognition.py";
 
-        final TranslationOutputBoundary translationOutputBoundary = new TranslationPresenter(translationViewModel);
-        final TranslationDataAccessObject languageDataAccessObject = new TranslationDataAccessObject();
-        final TranslationInputBoundary selectLanguageInteractor = new TranslationInteractor(
-                languageDataAccessObject, translationOutputBoundary);
-        final TranslationController translationController = new TranslationController(selectLanguageInteractor);
-        signLanguageView.setSelectLanguageController(translationController);
+            GoogleSpeechRecognizer speechRecognizer = new GoogleSpeechRecognizer();
+            ProcessSpeechInputUseCase speechInputUseCase = new ProcessSpeechInputUseCase(speechRecognizer);
+            SpeechtoTextController speechToTextController = new SpeechtoTextController(speechInputUseCase);
 
-        PredictionInterface predictor = new PredictionService(pythonInterpreter, scriptPath);
+            TranslationViewModel translationViewModel = new TranslationViewModel();
+            SignLanguageView signLanguageView = new SignLanguageView(speechToTextController, translationViewModel);
 
-        SignLanguagePresenter signLanguagePresenter = new SignLanguagePresenter(signLanguageView, predictor);
-        SignLanguageController signLanguageController = new SignLanguageController(signLanguagePresenter);
-        signLanguageController.startRecognition();
+            TranslationOutputBoundary translationOutputBoundary = new TranslationPresenter(translationViewModel);
+            TranslationDataAccessObject languageDataAccessObject = new TranslationDataAccessObject();
+            TranslationInputBoundary selectLanguageInteractor = new TranslationInteractor(
+                    languageDataAccessObject, translationOutputBoundary);
+            TranslationController translationController = new TranslationController(selectLanguageInteractor);
+            signLanguageView.setSelectLanguageController(translationController);
+
+            PredictionInterface predictor = new PredictionService(pythonInterpreter, scriptPath);
+
+            SignLanguagePresenter signLanguagePresenter = new SignLanguagePresenter(signLanguageView, predictor);
+            SignLanguageController signLanguageController = new SignLanguageController(signLanguagePresenter);
+
+            signLanguageController.startRecognition();
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Failed to start the main application: " + e.getMessage());
+        }
     }
 }
-
-
