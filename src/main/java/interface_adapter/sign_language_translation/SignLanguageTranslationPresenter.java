@@ -2,7 +2,7 @@ package interface_adapter.sign_language_translation;
 
 import use_case.sign_language_translation.SignLanguageTranslationOutputBoundary;
 import use_case.sign_language_translation.SignLanguageTranslationOutputData;
-import view.ViewInterface;
+import view.GestureBridgeView;
 
 /**
  * Presenter for handling the presentation logic of the sign language signLanguageTranslationDisplay use case.
@@ -10,14 +10,14 @@ import view.ViewInterface;
  */
 public class SignLanguageTranslationPresenter implements SignLanguageTranslationOutputBoundary {
 
-    private final ViewInterface view;
+    private final GestureBridgeView view;
 
     /**
      * Constructor for the TranslationPresenter.
      *
      * @param view the view that will display the signLanguageTranslationDisplay results
      */
-    public SignLanguageTranslationPresenter(ViewInterface view) {
+    public SignLanguageTranslationPresenter(GestureBridgeView view) {
         this.view = view;
     }
 

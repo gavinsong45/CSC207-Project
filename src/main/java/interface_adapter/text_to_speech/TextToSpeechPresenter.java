@@ -9,7 +9,6 @@ import use_case.text_to_speech.TextToSpeechOutputData;
  */
 public class TextToSpeechPresenter implements TextToSpeechOutputBoundary {
     private final AudioPlayer audioPlayer;
-    // Add variable
 
     public TextToSpeechPresenter(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -19,8 +18,6 @@ public class TextToSpeechPresenter implements TextToSpeechOutputBoundary {
         // Delegate the actual audio playback to the AudioPlayer
         try {
             System.out.println("Audio content is ready, now playing audio...");
-            // If we want this to be played in the view, we can either make another audio interface
-            // or
             audioPlayer.playAudio(outputData.getAudioContents());
         } catch (Exception e) {
             System.err.println("Error during audio playback: " + e.getMessage());

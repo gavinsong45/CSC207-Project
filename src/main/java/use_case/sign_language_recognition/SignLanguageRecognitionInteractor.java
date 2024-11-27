@@ -9,8 +9,8 @@ import java.io.IOException;
  */
 public class SignLanguageRecognitionInteractor {
     private final PredictionInterface predictor;
-    // Renamed to better fit the CA
-    private final SignLanguageRecognitionOutputBoundary signLanguagePresenter;
+//    private final SignLanguagePresenter presenter;
+    private final SignLanguageRecognitionOutputBoundary outputBoundary;
 
 
     /**
@@ -21,7 +21,8 @@ public class SignLanguageRecognitionInteractor {
      */
     public SignLanguageRecognitionInteractor(PredictionInterface predictor, SignLanguageRecognitionOutputBoundary outputBoundary) {
         this.predictor = predictor;
-        this.signLanguagePresenter = outputBoundary;
+        this.outputBoundary = outputBoundary;
+//        this.presenter = presenter;
     }
 
     /**
@@ -42,7 +43,7 @@ public class SignLanguageRecognitionInteractor {
      */
     private void predictionToPresenter(String prediction) {
         SignLanguageRecognitionOutputData outputData = new SignLanguageRecognitionOutputData(prediction);
-        signLanguagePresenter.updateView(outputData);
+        outputBoundary.updateView(outputData);
     }
 }
 

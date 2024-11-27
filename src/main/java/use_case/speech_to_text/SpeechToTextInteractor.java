@@ -1,3 +1,45 @@
+//package use_case.speech_to_text;
+//
+//import frameworks_and_drivers.SpeechRecognizer;
+//import entity.AudioTranscription;
+//
+///**
+// * Use case for processing speech input and converting it into text.
+// * This class implements the {@link SpeechToTextInputBoundary} interface and is responsible for
+// * converting audio data into a transcription using a speech recognition system.
+// */
+//public class SpeechToTextInteractor implements SpeechToTextInputBoundary {
+//    /**
+//     * The speech recognizer used to process the audio data.
+//     */
+//    private final SpeechRecognizer speechRecognizer;
+//
+//    /**
+//     * Constructs a new instance of {@code SpeechToTextInteractor}.
+//     *
+//     * @param speechRecognizer The {@link SpeechRecognizer} responsible for recognizing speech
+//     *                         from audio data.
+//     */
+//    public SpeechToTextInteractor(SpeechRecognizer speechRecognizer) {
+//        this.speechRecognizer = speechRecognizer;
+//    }
+//
+//    /**
+//     * Processes the given audio data to produce a transcription.
+//     *
+//     * @param audioData the audio data in byte array format.
+//     * @return an {@link AudioTranscription} object containing the transcribed text.
+//     * @throws Exception if an error occurs during the speech recognition process.
+//     */
+//    @Override
+//    public AudioTranscription processSpeech(byte[] audioData) throws Exception {
+//        String text = speechRecognizer.recognize(audioData);
+//        return new AudioTranscription(text);
+//    }
+//}
+//
+//
+
 package use_case.speech_to_text;
 
 import frameworks_and_drivers.speech_to_text.SpeechRecognizer;
@@ -11,8 +53,7 @@ import java.io.IOException;
 public class SpeechToTextInteractor implements SpeechToTextInputBoundary {
 
     private final SpeechRecognizer speechRecognizer;
-    // Renamed to better match CA
-    private final SpeechToTextOutputBoundary speechToTextPresenter;
+    private final SpeechToTextOutputBoundary outputBoundary;
 
     /**
      * Constructs a new ProcessSpeechInputUseCase.
@@ -22,7 +63,7 @@ public class SpeechToTextInteractor implements SpeechToTextInputBoundary {
      */
     public SpeechToTextInteractor(SpeechRecognizer speechRecognizer, SpeechToTextOutputBoundary outputBoundary) {
         this.speechRecognizer = speechRecognizer;
-        this.speechToTextPresenter = outputBoundary;
+        this.outputBoundary = outputBoundary;
     }
 
     /**
@@ -35,6 +76,6 @@ public class SpeechToTextInteractor implements SpeechToTextInputBoundary {
     public void processSpeech(SpeechToTextInputData inputData) throws Exception {
         String onSpeechRecognition = speechRecognizer.recognize(inputData.getAudioData());
         SpeechToTextOutputData outputData = new SpeechToTextOutputData(onSpeechRecognition);
-        speechToTextPresenter.deliverTranscription(outputData);
+        outputBoundary.deliverTranscription(outputData);
     }
 }

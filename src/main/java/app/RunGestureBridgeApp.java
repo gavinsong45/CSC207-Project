@@ -23,7 +23,6 @@ import use_case.text_to_speech.TextToSpeechInputBoundary;
 import use_case.text_to_speech.TextToSpeechInteractor;
 import use_case.text_to_speech.TextToSpeechOutputBoundary;
 import view.GestureBridgeView;
-import view.ViewInterface;
 
 import java.io.IOException;
 
@@ -40,7 +39,6 @@ public class RunGestureBridgeApp {
      * @throws IOException if there is an I/O error during initialization.
      * @throws InterruptedException if interrupted during execution.
      */
-    // If possible, this here needs a bit more refactoring to separate into main and builder
     public static void main(String[] args) throws IOException, InterruptedException {
         // Initialize the view
         GestureBridgeView gestureBridgeView = initializeView();
@@ -73,8 +71,7 @@ public class RunGestureBridgeApp {
      * @param gestureBridgeView the main application view for communication with presenters.
      * @return the TextToSpeechController instance.
      */
-    // The view here is never used
-    private static TextToSpeechController initializeTextToSpeech(ViewInterface gestureBridgeView) {
+    private static TextToSpeechController initializeTextToSpeech(GestureBridgeView gestureBridgeView) {
         AudioPlayer audioPlayer = new AudioPlayer();
         TextToSpeechInterface textToSpeechService = new GoogleTextToSpeechGateway();
         TextToSpeechOutputBoundary outputBoundary = new TextToSpeechPresenter(audioPlayer);
@@ -85,11 +82,10 @@ public class RunGestureBridgeApp {
     /**
      * Initializes the Speech-to-Text module.
      *
-     * @param gestureBridgeView the view interface that is implemented by the main view to interact with presenter.
+     * @param gestureBridgeView the main application view for communication with presenters.
      * @return the SpeechToTextController instance.
      */
-    // Changed the input the view interface to remove dependencies
-    private static SpeechToTextController initializeSpeechToText(ViewInterface gestureBridgeView) {
+    private static SpeechToTextController initializeSpeechToText(GestureBridgeView gestureBridgeView) {
         GoogleSpeechRecognizer speechRecognizer = new GoogleSpeechRecognizer();
         SpeechToTextPresenter presenter = new SpeechToTextPresenter(gestureBridgeView);
         SpeechToTextInteractor interactor = new SpeechToTextInteractor(speechRecognizer, presenter);

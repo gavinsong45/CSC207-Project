@@ -18,7 +18,7 @@ public class GoogleTextToSpeechGateway implements TextToSpeechInterface {
     private final String credentialsPath;
 
     public GoogleTextToSpeechGateway() {
-        this.credentialsPath = "/Users/yibinwang/Desktop/summer-ranger-441414-f8-0a863841dab9.json";
+        this.credentialsPath = "src/main/java/data_access/package.json";
     }
 
     @Override
