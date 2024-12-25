@@ -5,7 +5,7 @@
 
 At its core, GestureBridge is more a bridge to fostering **greater inclusivity and understanding** between communities. By breaking down communication barriers, we hope to empower individuals who are deaf or hard of hearing, as well as their families, friends, and colleagues. We believe that **human connection** is the foundation of any thriving society, and our mission is to help people connect through language, regardless of the medium they use. 🤝💬
 
-The platform will initially support ASL fingerspelling, with plans to extend vocabulary and functionality over time. GestureBridge will continually evolve to offer better, more accurate sign language recognition and translation, creating a more inclusive environment for all
+The platform will initially support ASL fingerspelling, with plans to extend vocabulary and functionality over time. GestureBridge will continually evolve to offer better, more accurate sign language recognition and translation, creating a more inclusive environment for all.
 
 ## CONTRIBUTORS
 - Wania Sikandar Gondal ([@waniagondal](https://github.com/waniagondal))
